@@ -2,7 +2,7 @@
 A python datapipeline project which builds on pydantic.
 
 I have some new ideas how i want to evolve my datapipelines.
-
+We will use the chance to use some modern python. Inspired by other great open source projects, e.g. fastapi.
 
 ## How to get started
 In the process i will learn a lot.
