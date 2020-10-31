@@ -2,6 +2,7 @@ import os
 
 import pytest
 
+
 class SetEnv:
     def __init__(self):
         self.envars = set()
