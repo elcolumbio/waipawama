@@ -19,6 +19,9 @@ requires-python = ">=3.6"
 test = [
   "pytest >=2.7.3",
   "pytest-cov",
+  "flake8",
 ]
-
-
+dev = [
+    "autoflake",
+    "flake8",
+]
