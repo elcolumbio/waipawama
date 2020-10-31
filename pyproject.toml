@@ -10,6 +10,6 @@ classifiers = ["License :: OSI Approved :: MIT License"]
 description-file = "README.md"
 
 requires = [
-    "pandas",
-    "pydantic",
+    "pandas >=1.0",
+    "pydantic >=1.0",
 ]
