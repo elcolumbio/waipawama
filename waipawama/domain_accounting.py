@@ -1,13 +1,26 @@
 import datetime
 from enum import Enum
 import numpy as np
-from pydantic import BaseModel, Field
+from pydantic import (
+    BaseModel as PydanticBaseModel,
+    Field,
+    validator)
 from typing import Optional
+
+
+class BaseModel(PydanticBaseModel):
+    """Unclear if this hjacking is helpful."""
+    @validator('*')
+    def change_nan_to_none(cls, v, values, field):
+        if isinstance(v, float):
+            if np.isnan(v):
+                return None
+        return v
 
 
 class AccountingStatus(Enum):
     """Status wich are used by my specific accounting software."""
-    normal = np.nan, 'default value is np.nan'
+    normal = None
     reversed_transaction = 'S', 'Stornierte Buchungen'
     reverse_transaction = 's', 'Stornobuchung'
     corrected = 'U', 'Umbuchungen'
@@ -46,7 +59,7 @@ class Accounting(BaseModel):
     booking_date: datetime.date = Field(alias='Jour. Dat.')
     debit_account: int = Field(alias='Sollkto')
     credit_account: int = Field(alias='Habenkto')
-    status: AccountingStatus = Field(alias='Status')
+    status: Optional[AccountingStatus] = Field(alias='Status')
     posting_text: str = Field(alias='Buchungstext')
     contra_account: int = Field(alias='Gegenkto')
     vat_rate: Optional[int] = Field(alias='USt %')

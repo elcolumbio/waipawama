@@ -28,3 +28,4 @@ We will see how things fit together. Possible that we expose our Datapipeline wi
 ## Helpful ressources
 - [Data templates with pydantic!](https://ianwhitestone.work/data-templates-with-pydantic/)
 - pydantic docs
+- [pandas docs for countributing!](https://pandas.pydata.org/pandas-docs/stable/development/contributing.html#type-hints)
