@@ -24,3 +24,7 @@ First we want to keep SQL, Pandas and Pydantic Models seperate. Because we want 
 Maybe there is an argument to glue SQL, Pandas and Pydantic Models together. If so are we building a framework?
 
 We will see how things fit together. Possible that we expose our Datapipeline with FastAPI.
+
+## Helpful ressources
+- [Data templates with pydantic!](https://ianwhitestone.work/data-templates-with-pydantic/)
+- pydantic docs
