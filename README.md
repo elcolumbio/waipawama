@@ -13,17 +13,12 @@ Right now the big picture looks like this:
 - Use Pydantic for the configs
 
 - Build Datapipeline, i want to try out apache-airflow this time
-  - SQL
-  - Pandas Dataframes
-  - NoSQL?
 
-First we want to keep SQL, Pandas and Pydantic Models seperate. Because we want to implement native and fast solutions.
+- Bigquery we will use as datadump
+- Load Data with minimum changes and mainly just don't damage data
 
+- Use DBT for further transformations and reports
 
-## Ideas
-Maybe there is an argument to glue SQL, Pandas and Pydantic Models together. If so are we building a framework?
-
-We will see how things fit together. Possible that we expose our Datapipeline with FastAPI.
 
 ## Helpful ressources
 - [Data templates with pydantic!](https://ianwhitestone.work/data-templates-with-pydantic/)

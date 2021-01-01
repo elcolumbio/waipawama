@@ -43,7 +43,7 @@ class Paypal(BaseModel):
 
 
 class PaypalMeta(Meta):
-    """Wrapper for all the python functions for JtlData Model."""
+    """Wrapper for all the python functions for Paypal Model."""
     timespan: str = ''
 
     # When you call it the 2nd time after you wrote a file
