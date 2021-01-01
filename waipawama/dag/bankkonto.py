@@ -37,6 +37,7 @@ def bankkonto_dag():
         meta = BankkontoMeta(timespan=timespan)
         if not meta.TableExists:
             meta.create_table()
+        meta.update_table()  # relaxation and add columns possible
         meta.append_data()
         return timespan
 

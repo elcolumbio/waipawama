@@ -18,7 +18,7 @@ def get_timespan() -> str:
      schedule_interval='@monthly',
      start_date=datetime.datetime(2018, 12, 1),
      tags=['VAT'])
-def jtl_dag():
+def jtl_paypal_dag():
     """Ingestion for Jtl and Paypal."""
     @task()
     def jtl_external_file() -> str:
@@ -38,6 +38,7 @@ def jtl_dag():
         meta = JtlMeta(timespan=timespan)
         if not meta.TableExists:
             meta.create_table()
+        meta.update_table()  # relaxation and add columns possible
         meta.append_data()
         return timespan
 
@@ -60,6 +61,7 @@ def jtl_dag():
         meta = PaypalMeta(timespan=timespan)
         if not meta.TableExists:
             meta.create_table()
+        meta.update_table()  # relaxation and add columns possible
         meta.append_data()
         return timespan
 
@@ -79,4 +81,4 @@ def jtl_dag():
     dbt_test.set_upstream([timespan, timespan2])
 
 
-jtl_etl_dag = jtl_dag()
+jtl_etl_dag = jtl_paypal_dag()

@@ -1,6 +1,5 @@
 from pydantic import Field
 import datetime
-import numpy as np
 import pandas as pd
 import pathlib
 from typing import List, Optional
@@ -20,7 +19,7 @@ class Bankkonto(BaseModel):
     Auftraggeberkonto: int
     Bankleitzahl: int = Field(alias='Bankleitzahl Auftraggeberkonto')
     IBAN: str = Field(alias='IBAN Auftraggeberkonto')
-    Kategorie: str
+    Kategorie: Optional[str]
 
     # Meta Columns
     Timespan: str = Field(description='The key parameter for every run of the complete datapipeline, represents a VAT period.')
