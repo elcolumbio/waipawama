@@ -4,6 +4,7 @@ import pandas as pd
 from math import isnan
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
+from airflow.exceptions import AirflowFailException
 
 
 class BaseModel(PydanticBaseModel):
@@ -17,21 +18,32 @@ class BaseModel(PydanticBaseModel):
 
 class Meta(PydanticBaseModel):
     """Wrapper with basic function to prepare and push data to bigquery."""
+    @property
+    def DataFileExists(self):
+        if self.data_file.exists():
+            return True
+        else:
+            raise AirflowFailException(f'No such file available: {str(self.data_file)}.')
+
+    def validate(self):
+        df = self.read_csv()
+        df['Timespan'] = self.timespan
+        df['TimeInsert'] = pd.Timestamp.now(tz='utc')
+        return df
 
     def rename_columns(self):
         # dynamic parsing from our model, we could do more things like that.
         rename_columns = {
             model.alias: field for field, model in self.model.__fields__.items()}
 
-        df = self.read_csv()
+        df = self.validate()
         # ignore missing columns because alias can deprecate
         df.rename(rename_columns, axis=1, inplace=True, errors='ignore')
         return df
 
     def save_as_parquet(self):
         dfrenamed = self.rename_columns()
-        dfrenamed['Timespan'] = self.timespan
-        dfrenamed['TimeInsert'] = pd.Timestamp.now(tz='utc')
+        dfrenamed.dropna(axis=1, how='all', inplace=True)  # if all values in a column are none
         dfrenamed.to_parquet(self.tmp_file, index=False)
         return True
 

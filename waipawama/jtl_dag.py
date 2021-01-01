@@ -2,7 +2,7 @@ from airflow.decorators import dag, task
 from airflow.operators.python import get_current_context
 from airflow.operators.bash_operator import BashOperator
 import datetime
-from waipawama.jtl_invoice import JtlMeta
+from waipawama.models.jtl_invoice import JtlMeta
 
 
 def get_timespan() -> str:

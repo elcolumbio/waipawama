@@ -1,5 +1,4 @@
 import datetime
-from enum import Enum
 import numpy as np
 from pydantic import (
     BaseModel as PydanticBaseModel,

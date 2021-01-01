@@ -4,8 +4,7 @@ import numpy as np
 import pandas as pd
 import pathlib
 from typing import List, Optional
-from airflow.exceptions import AirflowFailException
-from .ingestion_template import (
+from ..ingestion_template import (
     BaseModel,
     Meta)
 
@@ -48,13 +47,6 @@ class JtlMeta(Meta):
     def data_file(self):
         """Set first part in env."""
         return pathlib.Path('/home/flo/Nextcloud/data/finance/', self.timespan, 'jtl_ebay.csv')
-
-    @property
-    def DataFileExists(self):
-        if self.data_file.exists():
-            return True
-        else:
-            raise AirflowFailException(f'No such file available: {str(self.data_file)}.')
 
     @property
     def tmp_file(self):
