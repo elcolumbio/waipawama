@@ -18,9 +18,9 @@ class BaseModel(PydanticBaseModel):
         return v
 
 
-class AccountingStatus(Enum):
+class AccountingStatus(BaseModel):
     """Status wich are used by my specific accounting software."""
-    normal = None
+    normal = None, 'ar'
     reversed_transaction = 'S', 'Stornierte Buchungen'
     reverse_transaction = 's', 'Stornobuchung'
     corrected = 'U', 'Umbuchungen'
