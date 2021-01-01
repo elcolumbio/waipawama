@@ -1,16 +1,6 @@
-from pydantic import (
-    BaseModel as PydanticBaseModel,
-    Field,
-    FilePath,
-    validator,
-    ValidationError)
-import pyarrow as pa
-import pyarrow.parquet as pq
-import datetime
-import numpy as np
+from pydantic import BaseModel as PydanticBaseModel
+from pydantic import validator
 import pandas as pd
-import pathlib
-from typing import List, Optional
 from math import isnan
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
@@ -32,17 +22,18 @@ class Meta(PydanticBaseModel):
         # dynamic parsing from our model, we could do more things like that.
         rename_columns = {
             model.alias: field for field, model in self.model.__fields__.items()}
-        
+
         df = self.read_csv()
         # ignore missing columns because alias can deprecate
         df.rename(rename_columns, axis=1, inplace=True, errors='ignore')
         return df
-    
+
     def save_as_parquet(self):
         dfrenamed = self.rename_columns()
         dfrenamed['Timespan'] = self.timespan
         dfrenamed['TimeInsert'] = pd.Timestamp.now(tz='utc')
         dfrenamed.to_parquet(self.tmp_file, index=False)
+        return True
 
     def read_parquet(self):
         return pd.read_parquet(self.tmp_file)
@@ -55,7 +46,7 @@ class Meta(PydanticBaseModel):
             return True
         except NotFound:
             return False
-        
+
     def create_schema(self, pydantic_schema):
         """The pydantic schema you get like this: self.model.schema(by_alias=False) ."""
         required = pydantic_schema['required']
@@ -70,13 +61,12 @@ class Meta(PydanticBaseModel):
                 dtype = 'FLOAT'
             elif model.get('format') == 'date' or model.get('format') == 'date-time':
                 dtype = 'TIMESTAMP'
-        
-                
+
             description = model.get('description', None)
             schema.append(bigquery.SchemaField(
                 column, dtype, mode=mode, description=description))
         return schema
-    
+
     def create_table(self):
         """Create schema from pydantic model and push."""
         client = bigquery.Client()
@@ -84,7 +74,7 @@ class Meta(PydanticBaseModel):
         table = bigquery.Table(self.table_id, schema=schema)
         table = client.create_table(table)
         return table
-    
+
     def update_table(self):
         """Create schema from pydantic model, bigquery only allows some changes."""
         client = bigquery.Client()
@@ -92,7 +82,7 @@ class Meta(PydanticBaseModel):
         table = bigquery.Table(self.table_id, schema=schema)
         table = client.update_table(table, ['schema'])
         return table
-        
+
     def append_data(self):
         """Append data and update schema."""
         client = bigquery.Client()
@@ -104,7 +94,7 @@ class Meta(PydanticBaseModel):
             bigquery.SchemaUpdateOption.ALLOW_FIELD_RELAXATION]
         job_config.schema = self.create_schema(self.model.schema(by_alias=False))
         job_config.source_format = bigquery.SourceFormat.PARQUET
-        
+
         with open(self.tmp_file, "rb") as source_file:
             job = client.load_table_from_file(
                 source_file,
