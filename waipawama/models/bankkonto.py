@@ -31,7 +31,7 @@ class BankkontoMeta(Meta):
     timespan: str = ''
 
     data: Optional[List[Bankkonto]] = None  # for  second step validating
-    table_id: str = 'waipa-1.test.Bankkonto'
+    table_id: str = 'waipawama.accountant.Bankkonto'
     model = Bankkonto  # We don't instantiate the Model with data
 
     #  somehow duplicate but it's explicit and easy to read

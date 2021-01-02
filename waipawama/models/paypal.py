@@ -49,7 +49,7 @@ class PaypalMeta(Meta):
     # When you call it the 2nd time after you wrote a file
     # you can validate it by passing a data paramter: df.to_dict('records')
     data: Optional[List[Paypal]] = None
-    table_id: str = 'waipa-1.test.Paypal'
+    table_id: str = 'waipawama.accountant.Paypal'
     model = Paypal  # We don't instantiate the Model with data
 
     #  somehow duplicate but it's explicit and easy to read

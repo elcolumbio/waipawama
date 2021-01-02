@@ -9,7 +9,6 @@ def get_timespan() -> str:
     """This is our main parameter in our monthly pipeline."""
     context = get_current_context()
     year_month = '-'.join(context['ds'].split('-')[:2])  # e.g. '2019-09'
-    year_month = '2018-02'
     return year_month
 
 

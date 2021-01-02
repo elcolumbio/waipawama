@@ -30,7 +30,7 @@ class JtlMeta(Meta):
     timespan: str = ''
 
     data: Optional[List[JtlInvoice]] = None  # for  second step validating
-    table_id: str = 'waipa-1.test.JtlInvoice'
+    table_id: str = 'waipawama.accountant.JtlInvoice'
     model = JtlInvoice  # We don't instantiate the Model with data
 
     #  somehow duplicate but it's explicit and easy to read

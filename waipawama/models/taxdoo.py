@@ -63,7 +63,7 @@ class TaxdooMeta(Meta):
     timespan: str = ''
 
     data: Optional[List[Taxdoo]] = None  # for  second step validating
-    table_id: str = 'waipa-1.test.Taxdoo'
+    table_id: str = 'waipawama.accountant.Taxdoo'
     model = Taxdoo  # We don't instantiate the Model with data
 
     #  somehow duplicate but it's explicit and easy to read
