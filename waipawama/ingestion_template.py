@@ -2,7 +2,9 @@ from pydantic import BaseModel as PydanticBaseModel
 from pydantic import validator
 import pandas as pd
 from math import isnan
+import google
 from google.cloud import bigquery
+from google.cloud import bigquery_storage
 from google.cloud.exceptions import NotFound
 from airflow.exceptions import AirflowFailException
 
@@ -113,3 +115,29 @@ class Meta(PydanticBaseModel):
                 self.table_id,
                 job_config=job_config,)
         return job.result()
+
+    def query_data(self):
+        """Query the complete view we just created."""
+        # we save 1 call, recommended in docs
+        credentials, _ = google.auth.default(
+            scopes=["https://www.googleapis.com/auth/cloud-platform"])
+        client = bigquery.Client(credentials=credentials)
+        bqstorageclient = bigquery_storage.BigQueryReadClient(credentials=credentials)
+        # We have the same alias in dbt. E.g. Bankkonto201801
+        view = f"{self.table_id.split('.')[-1]}{self.timespan.replace('-','')}"
+        df = (
+            client.query(f'select * from waipawama.accountant.{view}')
+            .result()
+            .to_dataframe(bqstorage_client=bqstorageclient))
+        return df
+
+    def write_target(self):
+        df = self.query_data()
+        df.to_csv(
+            self.target_file,
+            index=False,
+            encoding='latin-1',
+            sep=';',
+            decimal=',',
+            date_format='%d.%m.%Y')
+        return True

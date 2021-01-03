@@ -15,7 +15,8 @@ def get_timespan() -> str:
 @dag(default_args={'owner': 'florian'},
      schedule_interval='@monthly',
      start_date=datetime.datetime(2018, 12, 1),
-     tags=['VAT'])
+     tags=['VAT'],
+     max_active_runs=1)
 def bankkonto_dag():
     """Ingestion for Bankkonto."""
     @task()
@@ -40,16 +41,23 @@ def bankkonto_dag():
         meta.append_data()
         return timespan
 
-    dbt_test = BashOperator(
-        task_id='dbt_test',
-        bash_command=('source ~/dbt-env/bin/activate && '
-                      'cd ~/projects/accountant/ && dbt test'))
+    dbt_run = BashOperator(
+        task_id='dbt_run',
+        bash_command=(
+            'source ~/dbt-env/bin/activate && '
+            'cd ~/projects/accountant/ && '
+            'dbt run --models bankkonto_monthly --vars '
+            "'timespan: {{task_instance.xcom_pull(key='return_value')}}'"))
+
+    @task()
+    def bankkonto_write_lexware():
+        timespan = get_timespan()
+        meta = BankkontoMeta(timespan=timespan)
+        meta.write_target()
 
     timespan = bankkonto_external_file()
     timespan = bankkonto_write_parquet(timespan)
-    timespan = bankkonto_load_to_bigquery(timespan)
-
-    dbt_test.set_upstream(timespan)
+    bankkonto_load_to_bigquery(timespan) >> dbt_run >> bankkonto_write_lexware()
 
 
 bankkonto_etl_dag = bankkonto_dag()

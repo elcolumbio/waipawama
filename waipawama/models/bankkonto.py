@@ -44,6 +44,11 @@ class BankkontoMeta(Meta):
         return pathlib.Path('/home/flo/Nextcloud/data/finance/', self.timespan, 'bankkonto.CSV')
 
     @property
+    def target_file(self):
+        """Output file end of pipeline."""
+        return pathlib.Path('/home/flo/Nextcloud/data/finance/', self.timespan, 'accountant_bankkonto.txt')
+
+    @property
     def tmp_file(self):
         base_folder = '/home/flo/tests/'
         pathlib.Path(base_folder, self.timespan).mkdir(parents=True, exist_ok=True)
