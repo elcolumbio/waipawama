@@ -1,5 +1,7 @@
 # waipawama
 A python datapipeline project which builds on pydantic.
+Right now i got an overview and i will now double down on the benifits of this approach.
+For example we can parameterize Data Tests with pydantic objects easily.
 
 I have some new ideas how i want to evolve my datapipelines.
 We will use the chance to use some modern python. Inspired by other great open source projects, e.g. fastapi.
